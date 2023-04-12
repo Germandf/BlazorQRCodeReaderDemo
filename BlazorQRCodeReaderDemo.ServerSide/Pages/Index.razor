@@ -16,14 +16,16 @@
             UseBuiltinDiv="false" />
         
         <div @ref="barcodeReader!.barcodeScannerElement">
-            <div style="width: 480px; max-width: 100%">
-                <div data-action="sourceSelectPanel" style="display:none">
-                    <label for="sourceSelect">Select camera:</label>
-                    <span data-action="result"></span>
-                    <select data-action="sourceSelect" style="max-width:100%"></select>
+            <div style="max-width: 100%">
+                <div style="display: none">
+                    <div data-action="sourceSelectPanel" style="display:none">
+                        <label for="sourceSelect">Select camera:</label>
+                        <span data-action="result"></span>
+                        <select data-action="sourceSelect" style="max-width:100%"></select>
+                    </div>
                 </div>
 
-                <video id="video" playsinline autoplay style="max-width: 100%; object-fit: cover; aspect-ratio: auto;"></video>
+                <video id="video" playsinline autoplay style="max-width: 100%; object-fit: cover; aspect-ratio: 1/1;"></video>
 
                 <button data-action="startButton" style="display:none">Scan</button>
                 <button data-action="resetButton" style="display:none">Reset</button>
