@@ -8,32 +8,7 @@
 <div class="d-flex justify-center">
     @if (showScanBarcode)
     {
-        <BarcodeReader 
-            @ref="barcodeReader"
-            ScanResult="ApplyQrCode"
-            Close="CloseReader"
-            OnError="ApplyError"
-            UseBuiltinDiv="false" />
-        
-        <div @ref="barcodeReader!.barcodeScannerElement">
-            <div style="max-width: 100%">
-                <div style="display: none">
-                    <div data-action="sourceSelectPanel" style="display:none">
-                        <label for="sourceSelect">Select camera:</label>
-                        <span data-action="result"></span>
-                        <select data-action="sourceSelect" style="max-width:100%"></select>
-                    </div>
-                </div>
-
-                <video id="video" playsinline autoplay style="max-width: 100%; object-fit: cover; aspect-ratio: 1/1;"></video>
-
-                <button data-action="startButton" style="display:none">Scan</button>
-                <button data-action="resetButton" style="display:none">Reset</button>
-                <div class="d-flex justify-center">
-                    <MudButton data-action="closeButton" Variant="Variant.Filled" Color="Color.Secondary" Class="my-4">Close</MudButton>
-                </div>
-            </div>
-        </div>
+        <QrReader ApplyError="ApplyError" ApplyQrCode="ApplyQrCode" CloseReader="CloseReader" />
     }
     else if (isLoadingSomething)
     {
@@ -47,7 +22,6 @@
 
 @code {
 
-    BarcodeReader? barcodeReader;
     private bool showScanBarcode = false;
     private string? barCode;
     private string? errorMessage;
