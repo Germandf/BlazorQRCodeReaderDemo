@@ -1,45 +1,47 @@
 ﻿@page "/"
+@inject ISnackbar Snackbar
 
-<button type="button" @onclick="(() => showScanBarcode = !showScanBarcode)">
-    Scan Qr Code
-</button>
+<div class="d-flex justify-center">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenReader" Class="my-4">Scan Qr Code</MudButton>
+</div>
 
-<br />
-
-<input disabled type="text" style="min-width: 100px;" @bind-value="barCode" />
-
-@if (showScanBarcode)
-{
-    <BarcodeReader 
-        @ref="barcodeReader"
-        ScanResult="(e) => { barCode = e; showScanBarcode = !showScanBarcode; }"
-        Close="() => showScanBarcode =! showScanBarcode"
-        OnError="OnError"
-        UseBuiltinDiv="false" />
+<div class="d-flex justify-center">
+    @if (showScanBarcode)
+    {
+        <BarcodeReader 
+            @ref="barcodeReader"
+            ScanResult="ApplyQrCode"
+            Close="CloseReader"
+            OnError="ApplyError"
+            UseBuiltinDiv="false" />
         
-    <div @ref="barcodeReader!.barcodeScannerElement">
-        <div style="width: 480px; max-width: 100%">
-            <button data-action="startButton" style="display:none">Scan</button>
-            <button data-action="resetButton" style="display:none">Reset</button>
-            <button data-action="closeButton">Close</button>
+        <div @ref="barcodeReader!.barcodeScannerElement">
+            <div style="width: 480px; max-width: 100%">
+                <div data-action="sourceSelectPanel" style="display:none">
+                    <label for="sourceSelect">Select camera:</label>
+                    <span data-action="result"></span>
+                    <select data-action="sourceSelect" style="max-width:100%"></select>
+                </div>
 
-            <div data-action="sourceSelectPanel" style="display:none">
-                <label for="sourceSelect">Select camera:</label>
-                <span class="text-dark" data-action="result"></span>
-                <select data-action="sourceSelect" style="max-width:100%" class="form-control"></select>
-            </div>
+                <video id="video" playsinline autoplay style="max-width: 100%; object-fit: cover; aspect-ratio: auto;"></video>
 
-            <div>
-                <video id="video" playsinline autoplay style="max-width: 100%;"></video>
+                <button data-action="startButton" style="display:none">Scan</button>
+                <button data-action="resetButton" style="display:none">Reset</button>
+                <div class="d-flex justify-center">
+                    <MudButton data-action="closeButton" Variant="Variant.Filled" Color="Color.Secondary" Class="my-4">Close</MudButton>
+                </div>
             </div>
         </div>
-    </div>
-}
-
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <p>@errorMessage</p>
-}
+    }
+    else if (isLoadingSomething)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }
+    else if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <MudText><p>@errorMessage</p></MudText>
+    }
+</div>
 
 @code {
 
@@ -47,13 +49,39 @@
     private bool showScanBarcode = false;
     private string? barCode;
     private string? errorMessage;
+    private bool isLoadingSomething;
 
-    private Task OnError(string message)
+    private Task ApplyError(string message)
     {
         showScanBarcode = false;
         this.errorMessage = message;
         StateHasChanged();
         return Task.CompletedTask;
+    }
+
+    private async Task ApplyQrCode(string result)
+    {
+        Snackbar.Add($"QrCode read: {result}");
+        showScanBarcode = false;
+        await DoSomething();
+    }
+
+    private void CloseReader()
+    {
+        showScanBarcode = false;
+    }
+
+    private void OpenReader()
+    {
+        showScanBarcode = true;
+    }
+
+    private async Task DoSomething()
+    {
+        isLoadingSomething = true;
+        await Task.Delay(2000);
+        Snackbar.Add("Did something!", Severity.Success);
+        isLoadingSomething = false;
     }
 
 }
