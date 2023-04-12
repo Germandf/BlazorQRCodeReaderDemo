@@ -1,16 +1,13 @@
 ﻿@page "/"
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 <div class="d-flex justify-center">
     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenReader" Class="my-4">Scan Qr Code</MudButton>
 </div>
 
 <div class="d-flex justify-center">
-    @if (showScanBarcode)
-    {
-        <QrReader ApplyError="ApplyError" ApplyQrCode="ApplyQrCode" CloseReader="CloseReader" />
-    }
-    else if (isLoadingSomething)
+    @if (isLoadingSomething)
     {
         <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     }
@@ -47,16 +44,21 @@
         showScanBarcode = false;
     }
 
-    private void OpenReader()
+    private async Task OpenReader()
     {
         showScanBarcode = true;
+        var parameters = new DialogParameters();
+        parameters.Add(nameof(QrReaderDialog.ApplyQrCode), EventCallback.Factory.Create(this, (string arg) => ApplyQrCode(arg)));
+        parameters.Add(nameof(QrReaderDialog.ApplyError), EventCallback.Factory.Create(this, (string arg) => ApplyError(arg)));
+        parameters.Add(nameof(QrReaderDialog.CloseReader), EventCallback.Factory.Create(this, () => CloseReader()));
+        var dialog = await DialogService.ShowAsync<QrReaderDialog>("", parameters);
     }
 
     private async Task DoSomething()
     {
         isLoadingSomething = true;
         await Task.Delay(2000);
-        Snackbar.Add("Did something!", Severity.Success);
+        Snackbar.Add("Did something asynchronously!", Severity.Success);
         isLoadingSomething = false;
     }
 

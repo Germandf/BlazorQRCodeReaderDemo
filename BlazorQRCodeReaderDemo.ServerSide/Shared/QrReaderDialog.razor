@@ -1,0 +1,41 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Scan Qr Code</MudText>
+    </TitleContent>
+    <DialogContent>
+        <QrReader ApplyError="ApplyErrorAndClose" ApplyQrCode="ApplyQrCodeAndClose" CloseReader="CloseReader" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<string> ApplyQrCode { get; set; }
+    [Parameter]
+    public EventCallback CloseReader { get; set; }
+    [Parameter]
+    public EventCallback<string> ApplyError { get; set; }
+
+    private async Task ApplyQrCodeAndClose(string arg)
+    {
+        MudDialog.Cancel();
+        await ApplyQrCode.InvokeAsync(arg);
+    }
+
+    private async Task ApplyErrorAndClose(string arg)
+    {
+        MudDialog.Cancel();
+        await ApplyError.InvokeAsync(arg);
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

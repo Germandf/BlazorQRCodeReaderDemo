@@ -18,11 +18,7 @@
 
         <button data-action="startButton" style="display:none">Scan</button>
         <button data-action="resetButton" style="display:none">Reset</button>
-        <button data-action="closeButton" style="display:none">Reset</button>
-
-        <div class="d-flex justify-center">
-            <MudButton OnClick="Close" Variant="Variant.Filled" Color="Color.Secondary" Class="my-4">Close</MudButton>
-        </div>
+        <button data-action="closeButton" style="display:none">Close</button>
     </div>
 </div>
 
@@ -37,7 +33,7 @@
 
     private BarcodeReader? barcodeReader;
 
-    private void Close()
+    public void Close()
     {
         barcodeReader?.CloseScan();
     }
