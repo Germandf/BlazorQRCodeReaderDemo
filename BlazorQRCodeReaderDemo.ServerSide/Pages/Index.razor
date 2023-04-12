@@ -19,14 +19,11 @@
 
 @code {
 
-    private bool showScanBarcode = false;
-    private string? barCode;
     private string? errorMessage;
     private bool isLoadingSomething;
 
     private Task ApplyError(string message)
     {
-        showScanBarcode = false;
         this.errorMessage = message;
         StateHasChanged();
         return Task.CompletedTask;
@@ -34,27 +31,19 @@
 
     private async Task ApplyQrCode(string result)
     {
-        Snackbar.Add($"QrCode read: {result}");
-        showScanBarcode = false;
-        await DoSomething();
-    }
-
-    private void CloseReader()
-    {
-        showScanBarcode = false;
+        Snackbar.Add($"QrCode read: {result}", Severity.Normal);
+        await DoSomethingAsynchronously();
     }
 
     private async Task OpenReader()
     {
-        showScanBarcode = true;
         var parameters = new DialogParameters();
         parameters.Add(nameof(QrReaderDialog.ApplyQrCode), EventCallback.Factory.Create(this, (string arg) => ApplyQrCode(arg)));
         parameters.Add(nameof(QrReaderDialog.ApplyError), EventCallback.Factory.Create(this, (string arg) => ApplyError(arg)));
-        parameters.Add(nameof(QrReaderDialog.CloseReader), EventCallback.Factory.Create(this, () => CloseReader()));
-        var dialog = await DialogService.ShowAsync<QrReaderDialog>("", parameters);
+        await DialogService.ShowAsync<QrReaderDialog>(string.Empty, parameters);
     }
 
-    private async Task DoSomething()
+    private async Task DoSomethingAsynchronously()
     {
         isLoadingSomething = true;
         await Task.Delay(2000);

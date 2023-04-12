@@ -3,10 +3,10 @@
         <MudText Typo="Typo.h6">Scan Qr Code</MudText>
     </TitleContent>
     <DialogContent>
-        <QrReader ApplyError="ApplyErrorAndClose" ApplyQrCode="ApplyQrCodeAndClose" CloseReader="CloseReader" />
+        <QrReader ApplyError="ApplyErrorAndClose" ApplyQrCode="ApplyQrCodeAndClose" />
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton OnClick="MudDialog.Cancel">Cancel</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -17,8 +17,6 @@
 
     [Parameter]
     public EventCallback<string> ApplyQrCode { get; set; }
-    [Parameter]
-    public EventCallback CloseReader { get; set; }
     [Parameter]
     public EventCallback<string> ApplyError { get; set; }
 
@@ -32,10 +30,5 @@
     {
         MudDialog.Cancel();
         await ApplyError.InvokeAsync(arg);
-    }
-
-    private void Cancel()
-    {
-        MudDialog.Cancel();
     }
 }

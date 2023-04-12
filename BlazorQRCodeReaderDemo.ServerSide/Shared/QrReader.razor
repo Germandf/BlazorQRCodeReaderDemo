@@ -1,6 +1,5 @@
 ﻿<BarcodeReader @ref="barcodeReader"
                ScanResult="ApplyQrCode"
-               Close="CloseReader"
                OnError="ApplyError"
                UseBuiltinDiv="false" />
 
@@ -26,8 +25,6 @@
 
     [Parameter]
     public EventCallback<string> ApplyQrCode { get; set; }
-    [Parameter]
-    public EventCallback CloseReader { get; set; }
     [Parameter]
     public required Func<string, Task> ApplyError { get; set; }
 
