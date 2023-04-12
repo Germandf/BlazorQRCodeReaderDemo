@@ -1,8 +1,57 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<button type="button" @onclick="(() => showScanBarcode = !showScanBarcode)">
+    Scan code
+</button>
 
-<h1>Hello, world!</h1>
+<br />
 
-Welcome to your new app.
+<input disabled type="text" style="min-width: 100px;" @bind-value="barCode" />
 
+@if (showScanBarcode)
+{
+    <BarcodeReader 
+        @ref="barcodeReader"
+        ScanResult="(e) => { barCode = e; showScanBarcode = !showScanBarcode; }"
+        Close="() => showScanBarcode =! showScanBarcode"
+        OnError="OnError"
+        UseBuiltinDiv="false" />
+
+    <div @ref="barcodeReader!.barcodeScannerElement">
+        <div style="width: 480px; max-width: 100%">
+            <button data-action="startButton" style="display:none">Scan</button>
+            <button data-action="resetButton" style="display:none">Reset</button>
+            <button data-action="closeButton">Close</button>
+
+            <div data-action="sourceSelectPanel" style="display:none">
+                <label for="sourceSelect">SelectDevice:</label><span class="text-dark" data-action="result"></span>
+                <select data-action="sourceSelect" style="max-width:100%" class="form-control"></select>
+            </div>
+            <div>
+                <video id="video" playsinline autoplay style="height:480px;width: 640px;border: 1px solid red"></video>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p>@errorMessage</p>
+}
+
+@code {
+
+    BarcodeReader? barcodeReader;
+    private bool showScanBarcode = false;
+    private string? barCode;
+    private string? errorMessage;
+
+    private Task OnError(string message)
+    {
+        showScanBarcode = false;
+        this.errorMessage = message;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+}
