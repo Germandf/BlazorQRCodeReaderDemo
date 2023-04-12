@@ -1,7 +1,7 @@
 ﻿@page "/"
 
 <button type="button" @onclick="(() => showScanBarcode = !showScanBarcode)">
-    Scan code
+    Scan Qr Code
 </button>
 
 <br />
@@ -16,7 +16,7 @@
         Close="() => showScanBarcode =! showScanBarcode"
         OnError="OnError"
         UseBuiltinDiv="false" />
-
+        
     <div @ref="barcodeReader!.barcodeScannerElement">
         <div style="width: 480px; max-width: 100%">
             <button data-action="startButton" style="display:none">Scan</button>
@@ -24,11 +24,13 @@
             <button data-action="closeButton">Close</button>
 
             <div data-action="sourceSelectPanel" style="display:none">
-                <label for="sourceSelect">SelectDevice:</label><span class="text-dark" data-action="result"></span>
+                <label for="sourceSelect">Select camera:</label>
+                <span class="text-dark" data-action="result"></span>
                 <select data-action="sourceSelect" style="max-width:100%" class="form-control"></select>
             </div>
+
             <div>
-                <video id="video" playsinline autoplay style="height:480px;width: 640px;border: 1px solid red"></video>
+                <video id="video" playsinline autoplay style="max-width: 100%;"></video>
             </div>
         </div>
     </div>
